@@ -41,6 +41,8 @@
     "rimraf": "^2.5.2"
   },
   "dependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.5.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.6.3",
     "commander": "^2.9.0"
   }
 }
