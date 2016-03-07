@@ -6,8 +6,29 @@
 
 
 'use strict';
-const fs = require('fs');
+const fs = require('mz/fs');
 const path = './node_modules';
+
+
+async function createDirectoryAndWriteValue(value) {
+  if (!(await fs.exists(process.cwd() + '/runtime'))) {
+    await fs.mkdir(process.cwd() + '/runtime');
+  }
+  if (!(await fs.exists(process.cwd() + '/runtime/alaska-admin-view'))) {
+    await fs.mkdir(process.cwd() + '/runtime/alaska-admin-view');
+  }
+  if (!(await fs.exists(process.cwd() + '/runtime/alaska-admin-view/src'))) {
+    await fs.mkdir(process.cwd() + '/runtime/alaska-admin-view/src');
+  }
+  let outPath = process.cwd() + '/runtime/alaska-admin-view/src/views.js';
+  await fs.writeFile(outPath, value).then((err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('=> ' + outPath);
+    }
+  });
+}
 /**
  * 整理需要的内容
  * */
@@ -42,76 +63,14 @@ function collection(files) {
     }
   }
   viewsResult = arr.join('');
-  let outPath = process.cwd() + '/runtime/alaska-admin-view/src/views.js';
-  let p = new Promise((resolve, reject) => {
-    if (!fs.existsSync(process.cwd() + '/runtime')) {
-      fs.mkdir(process.cwd() + '/runtime', (e) => {
-        if (e) {
-          reject(e);
-        } else {
-          resolve();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
-
-  let p1 = new Promise((resolve, reject) => {
-    if (!fs.existsSync(process.cwd() + '/runtime/alaska-admin-view')) {
-      fs.mkdir(process.cwd() + '/runtime/alaska-admin-view', (e) => {
-        if (e) {
-          reject(e);
-        } else {
-          resolve();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
-
-  let p2 = new Promise((resolve, reject) => {
-    if (!fs.existsSync(process.cwd() + '/runtime/alaska-admin-view/src')) {
-      fs.mkdir(process.cwd() + '/runtime/alaska-admin-view/src', (e) => {
-        if (e) {
-          reject(e);
-        } else {
-          resolve();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
-  p
-    .then(() => p1, (e) => console.log(e))
-    .then(() => p2, (e) => console.log(e))
-    .then(() => {
-      fs.writeFile(outPath, viewsResult, (err) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('=> ' + outPath);
-        }
-      });
-    }, (e) => console.log(e));
+  createDirectoryAndWriteValue(viewsResult);
 }
-
-/**
- * 所有读取文件时的错误处理
- * */
-function excludeError(err, files) {
-  if (err) {
-    console.log(err);
-  } else {
+module.exports = function () {
+  fs.readdir(path).then((files) => {
     if (typeof files === 'object' && files.length > 0) {
       collection(files);
     } else {
       console.log('未找到要构建的文件！');
     }
-  }
-}
-module.exports = function () {
-  fs.readdir(path, excludeError);
+  });
 };

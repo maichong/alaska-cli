@@ -6,7 +6,7 @@
  */
 'use strict';
 const program = require('commander');
-const buildAdmin = require('./src/alaska-build');
+const buildAdmin = require('./lib/alaska-build');
 program
   .version('0.1.0')
   .command('alaska-build')
