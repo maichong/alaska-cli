@@ -10,7 +10,7 @@ const program = require('commander');
 
 program
   .version('0.1.0')
-  .command('create [name]', 'create project')
+  .command('init', 'init a project')
   .command('install [service]', 'install a service')
-  .command('build-admin', 'build admin views')
+  .command('build', 'build admin views')
   .parse(process.argv);

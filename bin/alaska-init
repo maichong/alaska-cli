@@ -4,4 +4,4 @@
 
 process.title = 'alaska';
 
-require('../lib/alaska-create');
+require('../lib/alaska-init');
