@@ -6,15 +6,12 @@
 
 'use strict';
 
-const program = require('commander');
 const path = require('path');
 const fs = require('mz/fs');
 const read = require('read-promise');
 const mkdirp = require('mkdirp-promise');
 const child_process = require('child_process');
-
-program
-  .parse(process.argv);
+const util = require('./util');
 
 async function readValue(options, checker) {
   let value = await read(options);
@@ -71,34 +68,35 @@ async function init() {
   let templateDir = path.resolve(__dirname, '../template') + '/';
   console.log('Initialize alaska project: ', dir);
   let rcFile = dir + '.alaska';
-  if (await fs.exists(rcFile)) {
+  if (util.isFile(rcFile)) {
     //.alaska 文件已经存在
     throw new Error('Current folder is already initialized!');
   }
 
-  if (!await fs.exists(dir + 'package.json')) {
+  if (!util.isFile(dir + 'package.json')) {
     throw new Error('Current folder is not a npm project,please run "npm init" first!');
   }
   let rc = {
     services: {}
   };
   let id = rc.id = await readValue({ prompt: 'id?', default: rc.id || path.basename(dir) });
+  let db = await readValue({ prompt: 'MongoDB url?', default: 'mongodb://localhost/' + id });
   let configFile = dir + 'config/' + id + '.js';
   let config = {
     id,
+    db,
     session: {
       type: 'alaska-cache-lru',
       store: {
         maxAge: 1000 * 60 * 60
       }
     },
-    db: 'mongodb://localhost/' + id,
     services: [
       'alaska-update'
     ],
     domain: '',
-    redirect: '',
     prefix: '',
+    redirect: '',
     statics: [{
       root: 'public',
       prefix: '/'
@@ -124,6 +122,7 @@ async function init() {
     'babel-preset-es2015',
     'babel-preset-react',
     'babel-preset-stage-0',
+    'babel-plugin-transform-runtime',
     'css-loader',
     'eslint',
     'eslint-config-airbnb',
@@ -135,12 +134,16 @@ async function init() {
   ];
   let withUser = false;
   let withAdmin = await readBool('is this project need a admin dashboard?', true);
+  let username;
+  let password;
   if (withAdmin) {
     withUser = true;
     config.services.push({ id: 'alaska-admin', alias: 'admin' });
     rc.services['alaska-admin'] = true;
     dependencies.push('alaska-admin');
     devDependencies.push('alaska-admin-view');
+    username = await readValue({ prompt: 'username for admin user?', default: 'alaska' });
+    password = await readValue({ prompt: 'password for admin user?', replace: '*', silent: true });
   } else {
     withUser = await readBool('is this project with user system?', true);
     if (withUser) {
@@ -150,13 +153,14 @@ async function init() {
   if (withUser) {
     config.services.push({ id: 'alaska-user', alias: 'user' });
     dependencies.push('alaska-user');
+    rc.services['alaska-user'] = true;
   }
 
   let port = await readValue({ prompt: 'http port?', default: 5000 }, Number.isInteger);
   config.port = parseInt(port);
 
   await mkdirp(dir + 'config');
-  if (!await fs.exists(configFile)) {
+  if (!util.isFile(configFile)) {
     await fs.writeFile(configFile, '\nexport default ' + JSON.stringify(config, null, 2).replace(/\"/g, '\''));
   }
   await mkdirp(dir + 'controllers');
@@ -167,45 +171,54 @@ async function init() {
   await mkdirp(dir + 'public');
   await mkdirp(dir + 'updates');
   await mkdirp(dir + 'runtime');
+  if (withAdmin) {
+    await mkdirp(dir + 'runtime/alaska-admin-view/src');
+    if (!util.isFile(dir + 'runtime/alaska-admin-view/src/index.jsx')) {
+      await copy(templateDir + 'index.jsx', dir + 'runtime/alaska-admin-view/src/index.jsx');
+    }
+    if (!util.isFile(dir + 'webpack.config.js')) {
+      await copy(templateDir + 'webpack.config.js', dir + 'webpack.config.js');
+    }
+
+    if (!util.isFile(dir + 'webpack.production.js')) {
+      await copy(templateDir + 'webpack.production.js', dir + 'webpack.production.js');
+    }
+    await copyAndReplace(templateDir + 'updates/0.0.1-admins.js', dir + 'updates/0.0.1-admins.js', {
+      ID: id,
+      USERNAME: username,
+      PASSWORD: password
+    });
+  }
 
   await writeJson(rcFile, rc);
 
-  if (!await fs.exists(dir + '.babelrc')) {
+  if (!util.isFile(dir + '.babelrc')) {
     await copy(templateDir + '.babelrc', dir + '.babelrc');
   }
 
-  if (!await fs.exists(dir + 'views/.babelrc')) {
+  if (!util.isFile(dir + 'views/.babelrc')) {
     await copy(templateDir + 'views/.babelrc', dir + 'views/.babelrc');
   }
 
-  if (!await fs.exists(dir + '.eslintrc')) {
+  if (!util.isFile(dir + '.eslintrc')) {
     await copy(templateDir + '.eslintrc', dir + '.eslintrc');
   }
 
-  if (!await fs.exists(dir + '.editorconfig')) {
+  if (!util.isFile(dir + '.editorconfig')) {
     await copy(templateDir + '.editorconfig', dir + '.editorconfig');
   }
 
-  if (!await fs.exists(dir + 'webpack.config.js')) {
-    await copy(templateDir + 'webpack.config.js', dir + 'webpack.config.js');
-  }
-
-  if (!await fs.exists(dir + 'webpack.production.js')) {
-    await copy(templateDir + 'webpack.production.js', dir + 'webpack.production.js');
-  }
-
-  if (!await fs.exists(dir + 'index.js')) {
+  if (!util.isFile(dir + 'index.js')) {
     await copyAndReplace(templateDir + 'index.js', dir + 'index.js', {
       ID: id
     });
   }
 
-  if (!await fs.exists(dir + id + '.js')) {
+  if (!util.isFile(dir + id + '.js')) {
     await copyAndReplace(templateDir + 'init.js', dir + id + '.js', {
       ID: id
     });
   }
-
 
   try {
     console.log('npm install -D ' + devDependencies.join(' '));
@@ -217,7 +230,6 @@ async function init() {
       }
     });
   } catch (err) {
-
   }
   try {
     console.log('npm install -S ' + dependencies.join(' '));
@@ -229,16 +241,12 @@ async function init() {
       }
     });
   } catch (err) {
-
   }
 }
 
 init().then(function () {
-  console.log('\n\n\n\n\n\t\tInitialization is complete!\n\n\n\n');
+  console.log('\n\n\n\n\n\t\t\tCongratulations!\n\n\t\t   Initialization is complete!\n\n\n\n');
 }, function (error) {
   console.log('Failed to initialize!');
   console.log(error.stack);
 });
-
-
-

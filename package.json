@@ -2,6 +2,9 @@
   "name": "alaska-cli",
   "version": "0.1.0",
   "description": "Alaska command line interface",
+  "keywords": [
+    "alaska"
+  ],
   "engines": {
     "node": ">=5.0.0"
   },
@@ -35,11 +38,11 @@
     "babel-plugin-transform-es2015-destructuring": "^6.6.0",
     "babel-plugin-transform-es2015-parameters": "^6.6.0",
     "babel-plugin-transform-object-rest-spread": "^6.5.0",
+    "babel-plugin-transform-async-to-generator": "^6.5.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.6.3",
     "rimraf": "^2.5.2"
   },
   "dependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.5.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.6.3",
     "commander": "^2.9.0",
     "mkdirp-promise": "^1.0.3",
     "mz": "^2.3.1",
