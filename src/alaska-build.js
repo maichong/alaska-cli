@@ -67,11 +67,11 @@ async function build() {
   content += '\nexports.wrappers={\n';
   for (let name in wrappers) {
     console.log(`wrapper : ${name}`);
-    content += `  ${name}:[`;
-    wrappers.forEach(function (wrapper) {
-      content += ` require('${wrapper}').default,`;
-      console.log(`\t-> ${wrapper}`);
-    });
+    content += `  '${name}':[`;
+    for (let key in wrappers) {
+      content += ` require('${wrappers[key]}').default,`;
+      console.log(`\t-> ${wrappers[key]}`);
+    }
     content += ' ]\n';
   }
   content += '};';
