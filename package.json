@@ -1,6 +1,6 @@
 {
   "name": "alaska-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Alaska command line interface",
   "keywords": [
     "alaska"
@@ -46,6 +46,7 @@
     "commander": "^2.9.0",
     "mkdirp-promise": "^1.0.3",
     "mz": "^2.3.1",
-    "read-promise": "^1.0.0"
+    "read-promise": "^1.0.0",
+    "mkdirp": "^0.5.1"
   }
 }
