@@ -87,9 +87,11 @@ async function init() {
     id,
     db,
     session: {
-      type: 'alaska-cache-lru',
       store: {
-        maxAge: 1000 * 60 * 60
+        type: 'alaska-cache-mongo',
+        url: db,
+        collection: 'app_session',
+        maxAge: 60 * 60
       }
     },
     services: [
@@ -109,6 +111,7 @@ async function init() {
   let dependencies = [
     'alaska',
     'alaska-update',
+    'alaska-cache-mongo',
     'babel-plugin-syntax-async-functions',
     'babel-plugin-syntax-class-properties',
     'babel-plugin-syntax-export-extensions',
