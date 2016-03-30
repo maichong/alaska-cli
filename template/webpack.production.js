@@ -8,7 +8,7 @@ module.exports = {
     __dirname + '/runtime/alaska-admin-view/src/index.jsx'
   ],
   output: {
-    filename: 'app.js',
+    filename: 'app.min.js',
     path: process.cwd() + '/runtime/alaska-admin-view/build',
     publicPath: '/assets/'
   },

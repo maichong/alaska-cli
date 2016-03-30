@@ -12,6 +12,7 @@ const read = require('read-promise');
 const mkdirp = require('mkdirp-promise');
 const child_process = require('child_process');
 const util = require('./util');
+const npm = require('npm');
 
 async function readValue(options, checker) {
   let value = await read(options);
@@ -101,7 +102,8 @@ async function init() {
       root: 'public',
       prefix: '/'
     }],
-    superUser: ''
+    superUser: '',
+    autoUpdate: true
   };
 
   let dependencies = [
@@ -163,9 +165,10 @@ async function init() {
   if (!util.isFile(configFile)) {
     await fs.writeFile(configFile, '\nexport default ' + JSON.stringify(config, null, 2).replace(/\"/g, '\''));
   }
-  await mkdirp(dir + 'controllers');
   await mkdirp(dir + 'models');
+  await mkdirp(dir + 'controllers');
   await mkdirp(dir + 'api');
+  await mkdirp(dir + 'sleds');
   await mkdirp(dir + 'templates');
   await mkdirp(dir + 'views');
   await mkdirp(dir + 'public');
@@ -183,7 +186,11 @@ async function init() {
     if (!util.isFile(dir + 'webpack.production.js')) {
       await copy(templateDir + 'webpack.production.js', dir + 'webpack.production.js');
     }
-    await copyAndReplace(templateDir + 'updates/0.0.1-admins.js', dir + 'updates/0.0.1-admins.js', {
+
+    if (!util.isFile(dir + 'config/alaska-admin.js')) {
+      await copy(templateDir + 'config/alaska-admin.js', dir + 'config/alaska-admin.js');
+    }
+    await copyAndReplace(templateDir + 'updates/0.0.1-init.js', dir + 'updates/0.0.1-init.js', {
       ID: id,
       USERNAME: username,
       PASSWORD: password
@@ -191,6 +198,14 @@ async function init() {
   }
 
   await writeJson(rcFile, rc);
+
+  if (!util.isFile(dir + 'controllers/index.js')) {
+    await copy(templateDir + 'controllers/index.js', dir + 'controllers/index.js');
+  }
+
+  if (!util.isFile(dir + 'templates/index.swig')) {
+    await copy(templateDir + 'templates/index.swig', dir + 'templates/index.swig');
+  }
 
   if (!util.isFile(dir + '.babelrc')) {
     await copy(templateDir + '.babelrc', dir + '.babelrc');

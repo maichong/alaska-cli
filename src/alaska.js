@@ -9,7 +9,7 @@
 const program = require('commander');
 
 program
-  .version('0.1.0')
+  .version(require('../package.json').version)
   .command('init', 'init a project')
   .command('install [service]', 'install a service')
   .command('build', 'build admin views')
