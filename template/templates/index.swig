@@ -14,7 +14,7 @@
     color: #333;
   }
 </style>
-<h1>Hello world!</h1>
+<h1>{{ t('greeting') }}</h1>
 
 </body>
 </html>

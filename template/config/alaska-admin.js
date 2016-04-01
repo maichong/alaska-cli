@@ -4,8 +4,6 @@
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
-
 export default {
   prefix: '/admin',
   statics: [{

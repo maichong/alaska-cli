@@ -1,11 +1,8 @@
-'use strict';
 
-const service = __service;
-const Register = service.sled('user.Register');
-const Init = service.sled('admin.Init');
+const Register = alaska.sled('alaska-user.Register');
+const Init = alaska.sled('alaska-admin.Init');
 
 export default async function () {
-
   await Init.run();
 
   await Register.run({
@@ -13,5 +10,4 @@ export default async function () {
     password: '${PASSWORD}',
     roles: ['root']
   });
-
-};
+}
