@@ -1,6 +1,5 @@
-
-const Register = alaska.sled('alaska-user.Register');
-const Init = alaska.sled('alaska-admin.Init');
+const Register = service.sled('user.Register');
+const Init = service.sled('admin.Init');
 
 export default async function () {
   await Init.run();
