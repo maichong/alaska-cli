@@ -1,8 +1,8 @@
 {
-  "alaska": "0.6.1",
+  "alaska": "0.6.3",
   "alaska-user": "0.6.0",
   "alaska-admin": "0.6.0",
-  "alaska-update": "0.6.0",
+  "alaska-update": "0.6.1",
   "alaska-cache-mongo": "0.2.2",
   "babel-plugin-syntax-async-functions": "6.5.0",
   "babel-plugin-syntax-class-properties": "6.5.0",
