@@ -16,6 +16,8 @@ npm init
 
 alaska init
 
+alaska build
+
 node index.js
 
 ```
