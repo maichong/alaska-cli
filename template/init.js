@@ -13,5 +13,5 @@ let options = {
 alaska.launch(options).then(() => {
   console.log('${ID} started');
 }, (error) => {
-  console.error(error.stack);
+  process.exit(1);
 });
