@@ -14,7 +14,7 @@
     color: #333;
   }
 </style>
-<h1>{{ t('greeting') }}</h1>
+<h1>{{ t('greeting',{name:'Alaska'}) }}</h1>
 
 </body>
 </html>
