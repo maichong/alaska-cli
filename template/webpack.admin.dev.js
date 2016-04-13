@@ -6,11 +6,11 @@ const webpack = require('webpack');
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
   entry: [
-    __dirname + '/runtime/alaska-admin-view/src/index.jsx'
+    __dirname + '/views/admin.jsx'
   ],
   output: {
     filename: 'app.js',
-    path: process.cwd() + '/runtime/alaska-admin-view/build',
+    path: process.cwd() + '/public/admin/js/',
     publicPath: '/assets/'
   },
   plugins: [
