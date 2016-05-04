@@ -13,7 +13,7 @@ const versions = require('../lib/versions.json');
 
 function update(pkg) {
   return new Promise(function (resolve, reject) {
-    request('https://registry.npmjs.com/' + pkg, function (e, r, body) {
+    request('http://registry.npm.taobao.org/' + pkg, function (e, r, body) {
       try {
         let json = JSON.parse(body);
         if (json['dist-tags']) {
