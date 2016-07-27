@@ -4,8 +4,6 @@
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
-
 import { App, store } from 'alaska-admin-view';
 import * as views from '../runtime/alaska-admin-view/views.js';
 
@@ -18,5 +16,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App views={views}/>
   </Provider>
-  , document.getElementById('app')
+  , document.getElementById('viewport')
 );

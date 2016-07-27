@@ -1,8 +1,12 @@
+import alaska from 'alaska';
 
-process.env.BABEL_CACHE_PATH = process.env.BABEL_CACHE_PATH || 'runtime/babel-cache.json';
+class MainService extends alaska.Service {
 
-require('babel-register')({
-  ignore: /node_modules/
+}
+
+let service = new MainService({
+  id: '${ID}',
+  dir: __dirname
 });
 
-require('./${ID}');
+export default service;

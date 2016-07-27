@@ -1,6 +1,6 @@
 {
   "name": "alaska-cli",
-  "version": "0.9.4",
+  "version": "0.10.0",
   "description": "Alaska command line interface",
   "keywords": [
     "alaska"
@@ -31,11 +31,12 @@
     "commander": "^2.9.0",
     "escodegen": "^1.8.0",
     "esprima": "^2.7.2",
-    "npm": "^3.8.8",
+    "npm": "^3.10.5",
     "read-promise": "^1.0.0",
-    "shelljs": "^0.7.0"
+    "shelljs": "^0.7.2",
+    "string-random": "^0.1.0"
   },
   "devDependencies": {
-    "request": "^2.72.0"
+    "request": "^2.74.0"
   }
 }
